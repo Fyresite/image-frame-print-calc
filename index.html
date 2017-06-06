@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Calc Test</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+    <script>
+
+      let state = {
+        minSQI:         35,
+        minPricePerSQI: 0.50,
+        maxSQI:         2400,
+        maxPricePerSQI: 0.30,
+        printWidth:     5,
+        printHeight:    7,
+        price:          0
+      };
+
+    </script>
+  </head>
+  <body style="padding: 10%">
+    <h1>Print Price Calculator</h1>
+    <form id="calc">
+      <div>
+        <label>Minimum SQI</label>
+        <input type="number" id="minSQI">
+      </div>
+      <div>
+        <label>Price Per SQI</label>
+        <input type="number" id="minPricePerSQI">
+      </div>
+      <br>
+      <div>
+        <label>Maximum SQI</label>
+        <input type="number" id="maxSQI">
+      </div>
+      <div>
+        <label>Price Per SQI</label>
+        <input type="number" id="maxPricePerSQI">
+      </div>
+      <hr />
+      <div>
+        <label>Print Width</label>
+        <input type="number" id="printWidth">
+      </div>
+      <div>
+        <label>Print Height</label>
+        <input type="number" id="printHeight">
+      </div>
+    </form>
+
+    <p>Total SQI: <span id="total-sqi"></span></p>
+    <p>SQI Price: $<span id="price"></span></p>
+    <hr />
+    <p>Total Print Price: $<span id="total-price"></span></p>
+
+    <script>
+
+      let inputs = document.getElementsByTagName('input');
+
+      for (let i = 0; i < inputs.length; i++) {
+        let input = inputs[i];
+
+        input.addEventListener('change', reCalc);
+      }
+
+      reCalc();
+
+      function reCalc(e) {
+        if (typeof e !== 'undefined') {
+          state[e.target.id] = e.target.value;
+        }
+
+        let m = (state.maxPricePerSQI - state.minPricePerSQI) / (state.maxSQI - state.minSQI);
+
+        let b = state.maxPricePerSQI - ( m * state.maxSQI )
+
+        let sqi = state.printHeight * state.printWidth;
+        console.log('sqi:', sqi);
+
+        state.price = (m * sqi) + b;
+
+        Object.keys(state).forEach((key, index) => {
+          let el = document.getElementById(key);
+
+          if (el.nodeName === 'INPUT') {
+            el.value = state[key];
+          }
+          else if (el.nodeName === 'SPAN') {
+            el.innerHTML = state[key];
+          }
+        });
+
+        document.getElementById('total-sqi').innerHTML = sqi;
+        document.getElementById('total-price').innerHTML = sqi * state.price;
+      }
+
+    </script>
+  </body>
+</html>
