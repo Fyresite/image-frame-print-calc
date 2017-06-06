@@ -67,8 +67,12 @@
 
       function reCalc(e) {
         if (typeof e !== 'undefined') {
-          state[e.target.id] = parseInt(e.target.value);
+          console.log(e.target.id);
+          console.log(e.target.value);
+          state[e.target.id] = parseFloat(e.target.value);
         }
+
+        console.log(state);
 
         let m = (state.maxPricePerSQI - state.minPricePerSQI) / (state.maxSQI - state.minSQI);
         let b = state.maxPricePerSQI - ( m * state.maxSQI );
