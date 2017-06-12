@@ -3,6 +3,7 @@
   <head>
     <title>Calc Test</title>
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+    <script src="/Chart.js"></script>
     <script>
 
       let state = {
@@ -17,43 +18,52 @@
 
     </script>
   </head>
-  <body style="padding: 10%">
-    <h1>Print Price Calculator</h1>
-    <form id="calc">
-      <div>
-        <label>Minimum SQI</label>
-        <input type="number" id="minSQI">
-      </div>
-      <div>
-        <label>Price Per SQI</label>
-        <input type="number" id="minPricePerSQI">
-      </div>
-      <br>
-      <div>
-        <label>Maximum SQI</label>
-        <input type="number" id="maxSQI">
-      </div>
-      <div>
-        <label>Price Per SQI</label>
-        <input type="number" id="maxPricePerSQI">
-      </div>
-      <hr />
-      <div>
-        <label>Print Width</label>
-        <input type="number" id="printWidth">
-      </div>
-      <div>
-        <label>Print Height</label>
-        <input type="number" id="printHeight">
-      </div>
-    </form>
+  <body style="padding: 10%; width: 100%; box-sizing: border-box;">
+    <div style="width: 50%; float: left;">
+      <h1>Print Price Calculator</h1>
+      <form id="calc">
+        <div>
+          <label>Minimum SQI</label>
+          <input type="number" id="minSQI">
+        </div>
+        <div>
+          <label>Price Per SQI</label>
+          <input type="number" id="minPricePerSQI">
+        </div>
+        <br>
+        <div>
+          <label>Maximum SQI</label>
+          <input type="number" id="maxSQI">
+        </div>
+        <div>
+          <label>Price Per SQI</label>
+          <input type="number" id="maxPricePerSQI">
+        </div>
+        <hr />
+        <div>
+          <label>Print Width</label>
+          <input type="number" id="printWidth">
+        </div>
+        <div>
+          <label>Print Height</label>
+          <input type="number" id="printHeight">
+        </div>
+      </form>
 
-    <p>Total SQI: <span id="total-sqi"></span></p>
-    <p>SQI Price: $<span id="price"></span></p>
-    <hr />
-    <p>Total Print Price: $<span id="total-price"></span></p>
+      <p>Total SQI: <span id="total-sqi"></span></p>
+      <p>SQI Price: $<span id="price"></span></p>
+      <hr />
+      <p>Total Print Price: $<span id="total-price"></span></p>
+    </div>
+    <div style="width: 50%; float: left;">
+      <canvas id="price-chart" style="width: 100%;"></canvas>
+    </div>
+    <div style="clear: both;"></div>
 
     <script>
+
+      // Initialize chart.js stuff
+      let ctx = document.getElementById('price-chart').getContext('2d');
 
       let inputs = document.getElementsByTagName('input');
 
@@ -67,12 +77,8 @@
 
       function reCalc(e) {
         if (typeof e !== 'undefined') {
-          console.log(e.target.id);
-          console.log(e.target.value);
           state[e.target.id] = parseFloat(e.target.value);
         }
-
-        console.log(state);
 
         let m = (state.maxPricePerSQI - state.minPricePerSQI) / (state.maxSQI - state.minSQI);
         let b = state.maxPricePerSQI - ( m * state.maxSQI );
@@ -93,6 +99,25 @@
 
         document.getElementById('total-sqi').innerHTML = sqi;
         document.getElementById('total-price').innerHTML = sqi * state.price;
+
+        let priceChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            datasets: [{
+              label: 'Price Per SQI',
+              data: [
+                {
+                  x: state.minSQI,
+                  y: state.minPricePerSQI
+                },
+                {
+                  x: state.maxSQI,
+                  y: state.maxPricePerSQI
+                }
+              ]
+            }]
+          }
+        });
       }
 
     </script>
